@@ -70,7 +70,6 @@ function stop() {
 export default function useBoard() {
   return {
     board: computed(() => board.value),
-    gridSize: computed(() => board.value.length),
     init,
     start,
     stop,
