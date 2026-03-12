@@ -29,7 +29,7 @@ function tick() {
 
 function nextState(currentlyAlive: boolean, liveNeighbors: number) {
   if (currentlyAlive && liveNeighbors < 2) return false // under-population
-  if (currentlyAlive && liveNeighbors === 3) return true
+  if (currentlyAlive && (liveNeighbors === 2 || liveNeighbors === 3)) return true // survival
   if (currentlyAlive && liveNeighbors > 3) return false // over-population
   if (!currentlyAlive && liveNeighbors === 3) return true // reproduction
   return false
@@ -47,18 +47,20 @@ function findNeighbors(rowIndex: number, colIndex: number) {
     above?.[left],
     above?.[col],
     above?.[right],
+
     row?.[left],
-    row?.[col],
+    // self
     row?.[right],
+
     below?.[left],
     below?.[col],
     below?.[right],
   ]
 }
 
-function start() {
+function start(interval: number) {
   stop()
-  intervalId = setInterval(tick, 1000)
+  intervalId = setInterval(tick, interval)
 }
 
 function stop() {
