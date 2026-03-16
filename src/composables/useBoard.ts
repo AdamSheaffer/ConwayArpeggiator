@@ -1,7 +1,7 @@
 import { computed, shallowRef } from 'vue'
 
 const board = shallowRef<Cell[][]>([])
-const speed = 800
+const speed = 500
 let intervalId: number | null = null
 
 function init(rowCount: number, colCount: number, stateThreshold = 0.2) {

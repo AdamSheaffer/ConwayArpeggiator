@@ -20,7 +20,25 @@
       </div>
     </div>
 
-    <button @click="toggleArpeggiator()" class="text-white">Arpeggiator</button>
+    <div class="flex text-white space-x-4">
+      <button @click="toggleArpeggiator()">Arpeggiator</button>
+      <select v-model="key">
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+        <option value="E">E</option>
+      </select>
+      <select v-model="keyVariation">
+        <option value="major">Major</option>
+        <option value="major7">Major 7</option>
+        <option value="dominant7">Dominant</option>
+        <option value="minor">Minor</option>
+        <option value="minor7">Minor 7</option>
+      </select>
+
+      <input v-model="bpmTempo" type="number" />
+    </div>
   </div>
 </template>
 
@@ -29,7 +47,7 @@ import { useArpeggiator } from '@/composables/useArpeggiator'
 import useBoard from '@/composables/useBoard'
 
 const { board, init, start: startConwayGenerations, liveCells } = useBoard()
-init(30, 50)
+init(30, 50, 0.15)
 startConwayGenerations()
 
 const {
@@ -37,6 +55,9 @@ const {
   stop: stopArpeggiator,
   activeCell,
   isPlaying,
+  key,
+  keyVariation,
+  bpmTempo,
 } = useArpeggiator(liveCells)
 
 function toggleArpeggiator() {

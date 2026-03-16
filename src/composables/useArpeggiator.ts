@@ -1,57 +1,74 @@
 import * as Tone from 'tone'
 import type { Cell } from './useBoard'
-import { ref, type Ref } from 'vue'
+import { computed, ref, watch, type Ref } from 'vue'
+import { useIntervalFn } from '@vueuse/core'
 
 export function useArpeggiator(liveCells: Ref<Cell[]>) {
   let arpeggioSynth: Tone.PolySynth
-  let chordOscillators: ChordOscillator[] = []
-  let intervalId: number | null = null
+  let chordOscillators: ChordOscillatorChain[] = []
 
+  const key = ref<string>('C')
+  const keyVariation = ref<ChordVariation>('major7')
+  const octaveRange = ref(2)
+  const bpmTempo = ref(180)
   const activeCell = ref<Cell | undefined>()
   const isPlaying = ref(false)
+
+  const chordNotes = computed(() => getChordValues(key.value, keyVariation.value))
+  const arpeggioNotes = computed(() =>
+    getArpeggioValues(key.value, keyVariation.value, octaveRange.value),
+  )
+  const activeArpeggioNote = computed(() => {
+    const index = (activeCell.value?.col ?? 0) % arpeggioNotes.value.length
+    return arpeggioNotes.value[index]
+  })
+  const arpeggiatorEightNoteInterval = computed(() => {
+    const quarterNote = (60 / bpmTempo.value) * 1000
+    return quarterNote / 2
+  })
+
+  function startChordOscillators() {
+    arpeggioSynth = new Tone.PolySynth().toDestination()
+
+    const vol = new Tone.Volume(-30).toDestination()
+
+    chordOscillators = chordNotes.value.map((note) => {
+      const osc = new Tone.Oscillator({ type: 'sawtooth', frequency: note })
+      osc.chain(vol)
+      osc.start()
+      return { osc }
+    })
+  }
+
+  function stopChordOscillators() {
+    chordOscillators.forEach(({ osc }) => osc.stop())
+  }
+
+  const { pause: stopArpeggiator, resume: startArpeggiator } = useIntervalFn(
+    () => {
+      activeCell.value = findNextActiveCell()
+      playActiveCell()
+    },
+    arpeggiatorEightNoteInterval,
+    { immediate: false },
+  )
 
   async function start() {
     stop()
 
     await Tone.start()
 
-    arpeggioSynth = new Tone.PolySynth().toDestination()
-
-    const notes = getChordValues('C', 'major7')
-    const vol = new Tone.Volume(-20).toDestination()
-
-    chordOscillators = notes.map((note) => {
-      const env = new Tone.AmplitudeEnvelope()
-      const osc = new Tone.Oscillator({ type: 'sawtooth', frequency: note })
-      osc.chain(env, vol)
-      osc.start()
-      env.triggerAttack()
-      return { osc, env }
-    })
-
-    activeCell.value = liveCells.value[0]
-    intervalId = setInterval(() => {
-      activeCell.value = findNextActiveCell()
-      playActiveCell()
-    }, 200)
+    startChordOscillators()
+    startArpeggiator()
 
     isPlaying.value = true
   }
 
   function stop() {
-    arpeggioSynth?.triggerRelease(0)
+    stopChordOscillators()
+    stopArpeggiator()
 
-    if (intervalId) {
-      clearInterval(intervalId)
-      intervalId = null
-    }
-
-    chordOscillators.forEach(({ osc, env }) => {
-      osc.stop()
-      env.triggerRelease()
-    })
-
-    activeCell.value = undefined
+    activeCell.value = liveCells.value[0]
     isPlaying.value = false
   }
 
@@ -71,16 +88,18 @@ export function useArpeggiator(liveCells: Ref<Cell[]>) {
     return next ?? liveCells.value[0]
   }
 
+  watch([key, keyVariation], () => {
+    stopChordOscillators()
+    startChordOscillators()
+  })
+
   function playActiveCell() {
-    if (!activeCell.value) return
-
-    const testNotes = getArpeggioValues('C', 'major7', 2)
-    const index = activeCell.value.col % testNotes.length
-
-    arpeggioSynth.triggerAttackRelease(testNotes[index]!, 0.2)
+    if (activeArpeggioNote.value) {
+      arpeggioSynth?.triggerAttackRelease(activeArpeggioNote.value!, 0.2)
+    }
   }
 
-  return { start, stop, activeCell, isPlaying }
+  return { start, stop, activeCell, isPlaying, key, keyVariation, bpmTempo }
 }
 
 function getChordValues(chordKey: string, variation: keyof ChordDef, octave = 2) {
@@ -204,7 +223,8 @@ interface ChordDef {
   minor7: string[]
 }
 
-interface ChordOscillator {
+type ChordVariation = keyof ChordDef
+
+interface ChordOscillatorChain {
   osc: Tone.Oscillator
-  env: Tone.AmplitudeEnvelope
 }
