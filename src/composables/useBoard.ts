@@ -1,6 +1,7 @@
 import { computed, shallowRef } from 'vue'
 
 const board = shallowRef<Cell[][]>([])
+const speed = 800
 let intervalId: number | null = null
 
 function init(rowCount: number, colCount: number, stateThreshold = 0.2) {
@@ -9,7 +10,11 @@ function init(rowCount: number, colCount: number, stateThreshold = 0.2) {
   for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
     const row: Cell[] = []
     for (let colIndex = 0; colIndex < colCount; colIndex++) {
-      row.push({ state: Math.random() > 1 - stateThreshold })
+      row.push({
+        state: Math.random() > 1 - stateThreshold,
+        row: rowIndex,
+        col: colIndex,
+      })
     }
     initialState.push(row)
   }
@@ -20,7 +25,10 @@ function tick() {
   const nextGeneration: Cell[][] = board.value.map((row, rowIndex) => {
     return row.map((cell, colIndex) => {
       const liveNeighbors = findNeighbors(rowIndex, colIndex).filter((n) => n?.state)
-      return { state: nextState(cell.state, liveNeighbors.length) }
+      return {
+        ...cell,
+        state: nextState(cell.state, liveNeighbors.length),
+      }
     })
   })
 
@@ -58,20 +66,24 @@ function findNeighbors(rowIndex: number, colIndex: number) {
   ]
 }
 
-function start(interval: number) {
+function start() {
   stop()
-  intervalId = setInterval(tick, interval)
+  intervalId = setInterval(tick, speed)
 }
 
 function stop() {
   if (intervalId) {
     clearInterval(intervalId)
+    intervalId = null
   }
 }
+
+const liveCells = computed(() => board.value.flat().filter((c) => c.state))
 
 export default function useBoard() {
   return {
     board: computed(() => board.value),
+    liveCells,
     init,
     start,
     stop,
@@ -80,4 +92,6 @@ export default function useBoard() {
 
 export interface Cell {
   state: boolean
+  row: number
+  col: number
 }
