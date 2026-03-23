@@ -2,8 +2,8 @@
   <div
     @mouseenter="showDeleteButton = true"
     @mouseleave="showDeleteButton = false"
-    class="relative w-14 h-14 border-2 border-cyan-300 flex justify-center items-center transition-colors duration-300"
-    :class="{ 'bg-cyan-300 text-zinc-950': active, 'text-cyan-300': !active }"
+    class="relative w-14 h-14 border-2 border-secondary flex justify-center items-center transition-colors duration-300"
+    :class="{ 'bg-secondary text-zinc-950': active, 'text-secondary': !active }"
   >
     <div>
       <span>{{ chord.chord }}</span>
@@ -13,9 +13,10 @@
     <button
       v-if="showDeleteButton"
       @click="emit('remove')"
-      class="absolute -top-1/4 -right-1/4 w-6 h-6 rounded-full bg-amber-200 text-zinc-950 flex justify-center items-center text-xs cursor-pointer"
+      class="absolute z-10 -top-1/4 -right-1/4 w-6 h-6 rounded-full bg-zinc-300 hover:bg-zinc-200 text-zinc-950 flex justify-center items-center text-xs cursor-pointer"
+      title="Remove"
     >
-      X
+      -
     </button>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex space-x-2 space-y-2 flex-wrap">
+  <div class="grid grid-cols-4 gap-2">
     <ChordProgressionChord
       v-for="(sequence, i) in progression"
       :key="i"

@@ -1,1 +1,7 @@
 @import 'tailwindcss';
+@plugin "@tailwindcss/forms";
+
+@theme {
+  --color-primary: var(--color-purple-400);
+  --color-secondary: var(--color-cyan-400);
+}
