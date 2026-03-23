@@ -6,3 +6,4 @@
 - Time signature
 - Styling
 - Drag and drop conway repeaters
+- Refactor from timer intervals to ToneJS step sequencer

@@ -1,6 +1,7 @@
-import { computed, shallowRef } from 'vue'
+import { computed, ref, shallowRef } from 'vue'
 
 const board = shallowRef<Cell[][]>([])
+const isPlaying = ref(false)
 const speed = 500
 let intervalId: number | null = null
 
@@ -68,10 +69,12 @@ function findNeighbors(rowIndex: number, colIndex: number) {
 
 function start() {
   stop()
+  isPlaying.value = true
   intervalId = setInterval(tick, speed)
 }
 
 function stop() {
+  isPlaying.value = false
   if (intervalId) {
     clearInterval(intervalId)
     intervalId = null
@@ -87,6 +90,7 @@ export default function useBoard() {
     init,
     start,
     stop,
+    isPlaying,
   }
 }
 

@@ -1,8 +1,8 @@
 <template>
   <div class="space-y-2">
-    <div class="flex items-baseline justify-between">
+    <div class="flex items-center justify-between">
       <FormLabel>{{ label }}</FormLabel>
-      <span class="text-2xl font-bold text-primary leading-none">
+      <span class="text-xl font-bold text-primary leading-none">
         {{ model }}
       </span>
     </div>
