@@ -81,6 +81,17 @@ function stop() {
   }
 }
 
+function toggleCell(cell: Cell) {
+  const updatedBoard = [...board.value]
+  const currentCell = updatedBoard[cell.row]?.[cell.col]
+
+  if (currentCell) {
+    const updatedCell: Cell = { ...currentCell, state: !currentCell.state }
+    updatedBoard[cell.row]![cell.col] = updatedCell
+    board.value = updatedBoard
+  }
+}
+
 const liveCells = computed(() => board.value.flat().filter((c) => c.state))
 
 export default function useBoard() {
@@ -90,6 +101,7 @@ export default function useBoard() {
     init,
     start,
     stop,
+    toggleCell,
     isPlaying,
   }
 }

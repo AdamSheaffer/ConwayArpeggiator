@@ -98,6 +98,11 @@ export const chords: Record<string, ChordDef> = {
   },
 }
 
+export const timeSignatureOptions = [
+  { label: '4/4', value: 4 },
+  { label: '3/4', value: 3 },
+]
+
 const settings = ref<ArpeggiatorSettings>({
   bpm: 120,
   chord: 'C',

@@ -18,6 +18,13 @@
 
         <AppDivider />
 
+        <FormLabel>Time Signature</FormLabel>
+        <div>
+          <SelectInput v-model="settings.timeSignature" :options="timeSignatureOptions" />
+        </div>
+
+        <AppDivider />
+
         <RangeInput v-model="settings.octaveRange" :min="1" :max="5" label="Octave Range" />
       </div>
     </div>
@@ -42,7 +49,11 @@
 </template>
 
 <script setup lang="ts">
-import { useArpeggiatorSettings, type Chord } from '@/composables/useArpeggiatorSettings'
+import {
+  useArpeggiatorSettings,
+  timeSignatureOptions,
+  type Chord,
+} from '@/composables/useArpeggiatorSettings'
 import ChordSelect from './ChordSelect.vue'
 import ChordProgression from './ChordProgression.vue'
 import { useArpeggiator } from '@/composables/useArpeggiator'
@@ -53,6 +64,8 @@ import AppButton from './base/AppButton.vue'
 import { computed } from 'vue'
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons'
 import useBoard from '@/composables/useBoard'
+import SelectInput from './base/SelectInput.vue'
+import FormLabel from './base/FormLabel.vue'
 
 const { settings } = useArpeggiatorSettings()
 const { measure } = useArpeggiator()
