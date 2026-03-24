@@ -14,11 +14,11 @@
         </h1>
       </div>
     </div>
-    <OptionsForm />
+    <SettingsMenu />
   </main>
 </template>
 
 <script setup lang="ts">
-import OptionsForm from './components/OptionsForm.vue'
+import SettingsMenu from './components/SettingsMenu.vue'
 import TheBoard from './components/TheBoard.vue'
 </script>
