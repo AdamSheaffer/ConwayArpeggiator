@@ -1,8 +1,9 @@
-import { computed, ref, shallowRef } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { useIntervalFn } from '@vueuse/core'
+import { useSettings } from '@/composables/useSettings'
 
+const { settings } = useSettings()
 const board = shallowRef<Cell[][]>([])
-const speed = ref(500)
 
 function init(rowCount: number, colCount: number, stateThreshold = 0.2) {
   const initialState: Cell[][] = []
@@ -70,7 +71,7 @@ const {
   pause: stop,
   resume: start,
   isActive: isPlaying,
-} = useIntervalFn(tick, speed, { immediate: false })
+} = useIntervalFn(tick, () => settings.value.generationDuration, { immediate: false })
 
 function toggleCell(cell: Cell) {
   const updatedBoard = [...board.value]
@@ -91,7 +92,6 @@ export default function useBoard() {
     init,
     isPlaying,
     liveCells,
-    speed,
     start,
     stop,
     toggleCell,

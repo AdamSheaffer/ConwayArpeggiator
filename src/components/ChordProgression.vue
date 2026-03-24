@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { type Chord } from '@/composables/useArpeggiatorSettings'
+import { type Chord } from '@/composables/useSettings'
 import ChordProgressionChord from './ChordProgressionChord.vue'
 
 const progression = defineModel<Chord[]>({ required: true })

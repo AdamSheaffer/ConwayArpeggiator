@@ -103,7 +103,7 @@ export const timeSignatureOptions = [
   { label: '3/4', value: 3 },
 ]
 
-const settings = ref<ArpeggiatorSettings>({
+const settings = ref<Settings>({
   bpm: 120,
   chord: 'C',
   chordQuality: 'major',
@@ -119,17 +119,16 @@ const settings = ref<ArpeggiatorSettings>({
   ],
   octaveRange: 3,
   timeSignature: 4,
+  generationDuration: 750,
 })
 
 let settingsWatchHandler: WatchHandle | null = null
 
-export function useArpeggiatorSettings() {
+export function useSettings() {
   settingsWatchHandler?.stop()
 
   const savedJsonSettings = localStorage.getItem('settings')
-  const savedSettings = savedJsonSettings
-    ? (JSON.parse(savedJsonSettings) as ArpeggiatorSettings)
-    : null
+  const savedSettings = savedJsonSettings ? (JSON.parse(savedJsonSettings) as Settings) : null
 
   if (savedSettings) {
     settings.value = {
@@ -149,13 +148,14 @@ export function useArpeggiatorSettings() {
   return { settings }
 }
 
-export interface ArpeggiatorSettings {
+export interface Settings {
   bpm: number
   chord: string
   chordQuality: ChordQuality
   progression: Chord[]
   octaveRange: number
   timeSignature: number
+  generationDuration: number
 }
 
 export interface Chord {

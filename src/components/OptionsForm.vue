@@ -32,7 +32,9 @@
     <div class="w-full">
       <ConfigHeader header="Conway Config" subheader="Generation" />
 
-      <div class="bg-zinc-900 border border-zinc-800 rounded-sm p-6 space-y-7 shadow-2xl"></div>
+      <div class="bg-zinc-900 border border-zinc-800 rounded-sm p-6 space-y-7 shadow-2xl">
+        <GenerationSpeedSelect v-model="settings.generationDuration" />
+      </div>
     </div>
 
     <div class="flex gap-4 w-full">
@@ -49,11 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  useArpeggiatorSettings,
-  timeSignatureOptions,
-  type Chord,
-} from '@/composables/useArpeggiatorSettings'
+import { useSettings, timeSignatureOptions, type Chord } from '@/composables/useSettings'
 import ChordSelect from './ChordSelect.vue'
 import ChordProgression from './ChordProgression.vue'
 import { useArpeggiator } from '@/composables/useArpeggiator'
@@ -66,8 +64,9 @@ import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons'
 import useBoard from '@/composables/useBoard'
 import SelectInput from './base/SelectInput.vue'
 import FormLabel from './base/FormLabel.vue'
+import GenerationSpeedSelect from './GenerationSpeedSelect.vue'
 
-const { settings } = useArpeggiatorSettings()
+const { settings } = useSettings()
 const { measure } = useArpeggiator()
 const { isPlaying: isGenerating, start: startGeneration, stop: stopGeneration } = useBoard()
 

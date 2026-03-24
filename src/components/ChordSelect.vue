@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="w-full">
     <FormLabel>Progression</FormLabel>
 
-    <div class="flex space-x-2">
+    <div class="flex space-x-2 w-full">
       <SelectInput v-model="chord" :options="keyDropdownOptions" />
 
-      <SelectInput v-model="quality" :options="chordQualityOptions" />
+      <SelectInput v-model="quality" :options="chordQualityOptions" class="flex-1" />
 
       <AppButton @click="onAdd()" title="Add chord"> + </AppButton>
     </div>
@@ -13,8 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import { type Chord, type ChordQuality } from '@/composables/useArpeggiatorSettings'
-import { keyOptions, chordQualityOptions } from '@/composables/useArpeggiatorSettings'
+import { type Chord, type ChordQuality } from '@/composables/useSettings'
+import { keyOptions, chordQualityOptions } from '@/composables/useSettings'
 import SelectInput from './base/SelectInput.vue'
 import FormLabel from './base/FormLabel.vue'
 import AppButton from './base/AppButton.vue'
