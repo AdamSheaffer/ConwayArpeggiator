@@ -8,7 +8,7 @@
           :key="colIndex"
           class="w-4 h-4 transition-all duration-100"
           :class="{
-            'bg-red-500 shadow-lg':
+            'bg-red-500 shadow-lg scale-120 border-red-700 border':
               cell.state && cell.row === activeCell?.row && cell.col === activeCell.col,
             'bg-primary shadow-lg': cell.state && cell,
             'bg-slate-900 border border-slate-800': !cell.state,

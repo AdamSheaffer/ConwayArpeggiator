@@ -1,9 +1,8 @@
 import { computed, ref, shallowRef } from 'vue'
+import { useIntervalFn } from '@vueuse/core'
 
 const board = shallowRef<Cell[][]>([])
-const isPlaying = ref(false)
-const speed = 500
-let intervalId: number | null = null
+const speed = ref(500)
 
 function init(rowCount: number, colCount: number, stateThreshold = 0.2) {
   const initialState: Cell[][] = []
@@ -67,19 +66,11 @@ function findNeighbors(rowIndex: number, colIndex: number) {
   ]
 }
 
-function start() {
-  stop()
-  isPlaying.value = true
-  intervalId = setInterval(tick, speed)
-}
-
-function stop() {
-  isPlaying.value = false
-  if (intervalId) {
-    clearInterval(intervalId)
-    intervalId = null
-  }
-}
+const {
+  pause: stop,
+  resume: start,
+  isActive: isPlaying,
+} = useIntervalFn(tick, speed, { immediate: false })
 
 function toggleCell(cell: Cell) {
   const updatedBoard = [...board.value]
@@ -97,12 +88,13 @@ const liveCells = computed(() => board.value.flat().filter((c) => c.state))
 export default function useBoard() {
   return {
     board: computed(() => board.value),
-    liveCells,
     init,
+    isPlaying,
+    liveCells,
+    speed,
     start,
     stop,
     toggleCell,
-    isPlaying,
   }
 }
 

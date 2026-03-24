@@ -107,7 +107,16 @@ const settings = ref<ArpeggiatorSettings>({
   bpm: 120,
   chord: 'C',
   chordQuality: 'major',
-  progression: [],
+  progression: [
+    { chord: 'D', quality: 'major' },
+    { chord: 'A', quality: 'major' },
+    { chord: 'B', quality: 'minor' },
+    { chord: 'F#', quality: 'minor' },
+    { chord: 'G', quality: 'major' },
+    { chord: 'D', quality: 'major' },
+    { chord: 'G', quality: 'major' },
+    { chord: 'A', quality: 'major' },
+  ],
   octaveRange: 3,
   timeSignature: 4,
 })
