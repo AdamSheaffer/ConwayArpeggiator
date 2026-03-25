@@ -3,10 +3,10 @@ import type { Cell } from './useBoard'
 import { computed, ref } from 'vue'
 import { useIntervalFn } from '@vueuse/core'
 import { chords, useSettings, type ChordQuality } from './useSettings'
-import useBoard from './useBoard'
+import { useMainBoard } from './useBoard'
 
 const { settings } = useSettings()
-const { liveCells } = useBoard()
+const { liveCells } = useMainBoard()
 
 export function useArpeggiator() {
   return {

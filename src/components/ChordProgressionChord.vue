@@ -3,7 +3,10 @@
     @mouseenter="showDeleteButton = true"
     @mouseleave="showDeleteButton = false"
     class="relative w-14 h-14 border-2 border-secondary flex justify-center items-center transition-colors duration-300"
-    :class="{ 'bg-secondary text-zinc-950': active, 'text-secondary': !active }"
+    :class="{
+      'bg-secondary text-zinc-950': active,
+      'text-secondary': !active,
+    }"
   >
     <div>
       <span>{{ chord.chord }}</span>

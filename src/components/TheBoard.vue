@@ -21,9 +21,9 @@
 
 <script setup lang="ts">
 import { useArpeggiator } from '@/composables/useArpeggiator'
-import useBoard from '@/composables/useBoard'
+import { useMainBoard } from '@/composables/useBoard'
 
-const { board, init, toggleCell } = useBoard()
+const { board, init, toggleCell } = useMainBoard()
 init(30, 50, 0.15)
 
 const { activeCell } = useArpeggiator()

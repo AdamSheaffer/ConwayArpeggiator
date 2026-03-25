@@ -1,6 +1,6 @@
 <template>
   <div>
-    <FormLabel>Speed</FormLabel>
+    <FormLabel>Generation Speed</FormLabel>
     <div class="grid grid-cols-3">
       <AppButton @click="update('slow')" :outline="model !== options.slow">Slow</AppButton>
       <AppButton @click="update('medium')" :outline="model !== options.medium" class="border-x-0">

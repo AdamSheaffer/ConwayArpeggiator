@@ -33,16 +33,40 @@
       <ConfigHeader header="Conway Config" subheader="Generation" />
 
       <div class="bg-zinc-900 border border-zinc-800 rounded-sm p-6 space-y-7 shadow-2xl">
+        <FormLabel>Reset Grid</FormLabel>
+        <div class="flex gap-2">
+          <AppButton @click="clearGameOfLifeBoard()" outline class="flex-1">Clear</AppButton>
+          <AppButton @click="randomizeGameOfLifeBoard()" outline class="flex-1"
+            >Randomize</AppButton
+          >
+        </div>
+
+        <AppDivider />
+
         <GenerationSpeedSelect v-model="settings.generationDuration" />
+
+        <AppDivider />
+
+        <ConwayTemplateList />
       </div>
     </div>
 
     <div class="flex gap-4 w-full">
-      <AppButton @click="toggleGameOfLife()" :outline="!isGenerating" class="flex-1 text-xs">
+      <AppButton
+        @click="toggleGameOfLife()"
+        :outline="!isGenerating"
+        :shadow="!isGenerating"
+        class="flex-1 text-xs"
+      >
         <FaIcon :icon="conwayButtonIcon" />
         Generation
       </AppButton>
-      <AppButton @click="toggleArpeggiator()" :outline="!isPlaying" class="flex-1 text-xs">
+      <AppButton
+        @click="toggleArpeggiator()"
+        :outline="!isPlaying"
+        :shadow="!isPlaying"
+        class="flex-1 text-xs"
+      >
         <FaIcon :icon="arpeggiatorButtonIcon" />
         Arpeggiator
       </AppButton>
@@ -61,14 +85,20 @@ import ConfigHeader from './base/ConfigHeader.vue'
 import AppButton from './base/AppButton.vue'
 import { computed } from 'vue'
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons'
-import useBoard from '@/composables/useBoard'
+import { useMainBoard } from '@/composables/useBoard'
 import SelectInput from './base/SelectInput.vue'
 import FormLabel from './base/FormLabel.vue'
 import GenerationSpeedSelect from './GenerationSpeedSelect.vue'
+import ConwayTemplateList from './ConwayTemplateList.vue'
 
 const { settings } = useSettings()
 const { measure } = useArpeggiator()
-const { isPlaying: isGenerating, start: startGeneration, stop: stopGeneration } = useBoard()
+const {
+  isPlaying: isGenerating,
+  start: startGeneration,
+  stop: stopGeneration,
+  init,
+} = useMainBoard()
 
 function addChordToProgression(chord: Chord) {
   const newProgression = [...settings.value.progression, chord]
@@ -91,6 +121,14 @@ function toggleGameOfLife() {
   } else {
     startGeneration()
   }
+}
+
+function clearGameOfLifeBoard() {
+  init(30, 50, 0)
+}
+
+function randomizeGameOfLifeBoard() {
+  init(30, 50, 0.15)
 }
 
 const arpeggiatorButtonIcon = computed(() => (isPlaying.value ? faPause.iconName : faPlay.iconName))
