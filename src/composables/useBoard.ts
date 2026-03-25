@@ -6,6 +6,7 @@ export interface Cell {
   state: boolean
   row: number
   col: number
+  previewing?: boolean
 }
 
 export function useBoard(board: Ref<Cell[][]>) {
@@ -67,6 +68,47 @@ export function useBoard(board: Ref<Cell[][]>) {
     }
   }
 
+  function setPreviewBlock(topLeftCell: Cell, rows: number, cols: number) {
+    const startingRow = topLeftCell.row
+    const endingRow = topLeftCell.row + rows - 1
+    const startingCol = topLeftCell.col
+    const endingCol = topLeftCell.col + cols - 1
+
+    board.value = board.value.map((rows) =>
+      rows.map((cell) => {
+        const inPreviewRow = cell.row >= startingRow && cell.row <= endingRow
+        const inPreviewCol = cell.col >= startingCol && cell.col <= endingCol
+        const previewing = inPreviewRow && inPreviewCol
+        return { ...cell, previewing }
+      }),
+    )
+  }
+
+  function dropTemplate(topLeftCell: Cell, template: Cell[][]) {
+    const templateRowCount = template.length
+    const templateColCount = template[0]?.length ?? 0
+    const startingRow = topLeftCell.row
+    const endingRow = topLeftCell.row + templateRowCount - 1
+    const startingCol = topLeftCell.col
+    const endingCol = topLeftCell.col + templateColCount - 1
+
+    board.value = board.value.map((row) =>
+      row.map((mainCell) => {
+        const isInDropZoneRow = mainCell.row >= startingRow && mainCell.row <= endingRow
+        const isInDropZoneCol = mainCell.col >= startingCol && mainCell.col <= endingCol
+        if (!isInDropZoneRow || !isInDropZoneCol) return { ...mainCell }
+
+        const templateCell =
+          template[mainCell.row - topLeftCell.row]?.[mainCell.col - topLeftCell.col]
+        return { ...mainCell, state: templateCell?.state ?? false }
+      }),
+    )
+  }
+
+  function removePreviewBlock() {
+    board.value = board.value.map((row) => row.map((col) => ({ ...col, previewing: false })))
+  }
+
   function init(rowCount: number, colCount: number, stateThreshold: number) {
     const initialState: Cell[][] = []
 
@@ -97,9 +139,12 @@ export function useBoard(board: Ref<Cell[][]>) {
   )
 
   return {
+    dropTemplate,
     init,
     isPlaying,
     liveCells,
+    setPreviewBlock,
+    removePreviewBlock,
     start,
     stop,
     toggleCell,
@@ -109,14 +154,27 @@ export function useBoard(board: Ref<Cell[][]>) {
 const { settings } = useSettings()
 const mainBoard = shallowRef<Cell[][]>([])
 
-const { init, isPlaying, liveCells, start, stop, toggleCell } = useBoard(mainBoard)
+const {
+  dropTemplate,
+  init,
+  isPlaying,
+  liveCells,
+  start,
+  stop,
+  toggleCell,
+  setPreviewBlock,
+  removePreviewBlock,
+} = useBoard(mainBoard)
 
 export function useMainBoard() {
   return {
     board: computed(() => mainBoard.value),
+    dropTemplate,
     init,
     isPlaying,
     liveCells,
+    setPreviewBlock,
+    removePreviewBlock,
     start,
     stop,
     toggleCell,

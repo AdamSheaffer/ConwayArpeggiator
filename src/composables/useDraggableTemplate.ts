@@ -1,4 +1,4 @@
-import { ref, type Ref } from 'vue'
+import { computed, ref, type Ref } from 'vue'
 import type { Cell } from './useBoard'
 
 // prettier-ignore
@@ -139,4 +139,27 @@ export function toCells(emojiGrid: readonly string[]): Ref<Cell[][]> {
     })
   })
   return ref(grid)
+}
+
+const draggedTemplate = ref<Cell[][] | null>(null)
+
+const spacing = computed(() => {
+  if (!draggedTemplate.value) return null
+
+  const rowCount = draggedTemplate.value.length ?? 0
+  const colCount = draggedTemplate.value[0]?.length ?? 0
+
+  const centerRow = Math.ceil(rowCount / 2)
+  const centerCol = Math.ceil(colCount / 2)
+
+  return {
+    rowCount,
+    colCount,
+    rowOffset: rowCount - centerRow,
+    colOffset: colCount - centerCol,
+  }
+})
+
+export function useDraggableTemplate() {
+  return { spacing, draggedTemplate }
 }
