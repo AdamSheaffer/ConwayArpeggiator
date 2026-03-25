@@ -1,14 +1,28 @@
 name: Build Vue
-on: [push]
+on:
+  push:
+    branches:
+      - main
+
 jobs:
   build_vue:
     runs-on: ubuntu-latest
-    name: Build Vue
     steps:
-      - uses: actions/checkout@v2
-      - id: Build-Vue
-        uses: xRealNeon/VuePagesAction@1.0.1
+      - uses: actions/checkout@v3
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
         with:
-          username: 'AdamSheaffer'
-          reponame: 'ConwayArpeggiator'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
